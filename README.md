@@ -40,7 +40,3 @@ python idracamexer.py
 - `servidores.example.json` — modelo de configuração (sem dados reais)
 - `servidores.json` — sua configuração real (local, não versionada)
 
-## Pendências conhecidas
-
-- Seletores de LCD do iDRAC9 ainda não confirmados (`menu_lcd` / `titulo_lcd`
-  em `SELETORES["idrac9"]`).
