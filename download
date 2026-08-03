@@ -1,0 +1,18 @@
+# Configuração real com hosts, usuários e senhas — nunca deve ir pro repositório
+servidores.json
+servidores2.json
+*.local.json
+
+# Prints e HTML de debug gerados pelo script
+output/
+*.png
+*.html
+
+# Ambientes / cache Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Variáveis de ambiente
+.env

@@ -1,0 +1,38 @@
+[
+  {
+    "nome": "SERVIDOR-01",
+    "host": "192.0.2.10",
+    "usuario": "usuario_idrac",
+    "senha": "senha_idrac",
+    "geracao": "idrac9",
+    "possui_storage": true,
+    "possui_lcd": false
+  },
+  {
+    "nome": "SERVIDOR-02",
+    "host": "192.0.2.11",
+    "usuario": "usuario_idrac",
+    "senha": "senha_idrac",
+    "geracao": "idrac8",
+    "possui_storage": true,
+    "possui_lcd": false
+  },
+  {
+    "nome": "SERVIDOR-03",
+    "host": "192.0.2.12",
+    "usuario": "usuario_idrac",
+    "senha": "senha_idrac",
+    "geracao": "idrac7",
+    "possui_storage": true,
+    "possui_lcd": false
+  },
+  {
+    "nome": "SERVIDOR-04",
+    "host": "192.0.2.13",
+    "usuario": "usuario_idrac",
+    "senha": "senha_idrac",
+    "geracao": "idrac6",
+    "possui_storage": false,
+    "possui_lcd": true
+  }
+]
