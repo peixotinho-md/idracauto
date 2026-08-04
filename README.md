@@ -36,7 +36,7 @@ python idracamexer.py
 
 ## Estrutura
 
-- `idracamexer.py` — script principal
+- `idracfinal.py` — script principal
 - `servidores.example.json` — modelo de configuração (sem dados reais)
 - `servidores.json` — sua configuração real (local, não versionada)
 
