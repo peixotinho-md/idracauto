@@ -41,7 +41,7 @@ SELETORES = {
     },
     "idrac9": {
         "user": "input[name='username']",
-        "senha": "input[name='password']",
+        "senha": "input.cui-start-screen-password[type='password']",
         "botao": "button:has-text('Log In')",
 
         # Itens de menu clicáveis (barra de navegação) - não usa frameset
@@ -71,14 +71,14 @@ def obter_login_url(geracao, host):
 with open(CONFIG_PATH, "r", encoding="utf-8") as f:
     servidores = json.load(f)
 
-# Formato de data e hora: dd_mm_aa_hh_mm
-timestamp = datetime.now().strftime("%d_%m_%y_%H_%M")
+# Formato de data: dd-mm-aaaa
+timestamp = datetime.now().strftime("%d-%m-%Y")
 
 
 def tirar_print(page, output_dir, nome_servidor, nome_secao, timestamp):
     """
-    Gera o print no formato: dd_mm_aa_hh_mm_nome_do_servidor_secao.png
-    Exemplo: 31_07_26_14_30_S0039_dashboard.png
+    Gera o print no formato: nome_do_servidor_secao_dd-mm-aaaa.png
+    Exemplo: S0039_dashboard_31-07-2026.png
     """
     nome_arquivo = f"{timestamp}_{nome_servidor}_{nome_secao}.png"
     path_final = os.path.join(output_dir, nome_arquivo)
@@ -269,6 +269,19 @@ with sync_playwright() as p:
 
             page.fill(sel["user"], srv["usuario"])
             page.wait_for_timeout(500)
+
+             if geracao == "idrac9":
+                 page.locator(sel["user"]).press("Tab")
+                 page.wait_for_timeout(500)
+                 page.locator(sel["senha"]).wait_for(state="visible", timeout=15000)
+                 page.evaluate(
+                    "(sel) => { const el = document.querySelector(sel); if (el) el.removeAttribute('readonly'); }",
+                    sel["senha"],
+                 )
+                 page.click(sel["senha"])
+                 page.wait_for_timeout(300)
+
+            
             page.fill(sel["senha"], srv["senha"])
             page.wait_for_timeout(1000)
 
@@ -342,13 +355,13 @@ with sync_playwright() as p:
             print(f"  -> OK: {nome_servidor}")
 
         except Exception as e:
-            debug_frames = os.path.join(output_dir, f"{timestamp}_{nome_servidor}_DEBUG_erro.png")
+            debug_frames = os.path.join(output_dir, f"{nome_servidor}_DEBUG_erro_{timestamp}.png")
             page.screenshot(path=debug_frames, full_page=True)
 
             # Salva também o HTML da página no momento do erro, útil para
             # inspecionar qual seletor de botão/campo realmente existe no DOM.
             try:
-                debug_html = os.path.join(output_dir, f"{timestamp}_{nome_servidor}_DEBUG_erro.html")
+                debug_html = os.path.join(output_dir, f"{nome_servidor}_DEBUG_erro_{timestamp}.html")
                 with open(debug_html, "w", encoding="utf-8") as f_html:
                     f_html.write(page.content())
             except Exception:
