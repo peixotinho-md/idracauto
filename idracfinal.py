@@ -80,7 +80,7 @@ def tirar_print(page, output_dir, nome_servidor, nome_secao, timestamp):
     Gera o print no formato: nome_do_servidor_secao_dd-mm-aaaa.png
     Exemplo: S0039_dashboard_31-07-2026.png
     """
-    nome_arquivo = f"{timestamp}_{nome_servidor}_{nome_secao}.png"
+    nome_arquivo = f"{nome_servidor}_{nome_secao}_{timestamp}.png"
     path_final = os.path.join(output_dir, nome_arquivo)
     page.screenshot(path=path_final, full_page=True)
 
@@ -270,18 +270,24 @@ with sync_playwright() as p:
             page.fill(sel["user"], srv["usuario"])
             page.wait_for_timeout(500)
 
-             if geracao == "idrac9":
-                 page.locator(sel["user"]).press("Tab")
-                 page.wait_for_timeout(500)
-                 page.locator(sel["senha"]).wait_for(state="visible", timeout=15000)
-                 page.evaluate(
+            if geracao == "idrac9":
+                # Simulamos um Tab real a partir do
+                # campo de usuário (equivalente ao usuário navegando com o
+                # teclado), que dispara o blur/focus nativo que o Angular
+                # usa para liberar o campo — em vez de apenas clicar nele.
+                page.locator(sel["user"]).press("Tab")
+                page.wait_for_timeout(500)
+
+                page.locator(sel["senha"]).wait_for(state="visible", timeout=15000)
+                # Reforço: remove o readonly diretamente via JS, caso o Tab
+                # sozinho não seja suficiente.
+                page.evaluate(
                     "(sel) => { const el = document.querySelector(sel); if (el) el.removeAttribute('readonly'); }",
                     sel["senha"],
-                 )
-                 page.click(sel["senha"])
-                 page.wait_for_timeout(300)
+                )
+                page.click(sel["senha"])
+                page.wait_for_timeout(300)
 
-            
             page.fill(sel["senha"], srv["senha"])
             page.wait_for_timeout(1000)
 
@@ -381,7 +387,4 @@ print("\nConcluído.")
 
 #31/07/26 - iDRAC de geração 6 e 7 funcionando
 #03/08/26 - iDRAC 8 funcionando, iDRAC 9 integrado neste mesmo script (função processar_idrac9)
-#Pendências: 1) confirmar seletores de LCD do iDRAC9 (menu_lcd/titulo_lcd em SELETORES);
-#            2) adicionar os servidores idrac9 no servidores2.json (basta "geracao": "idrac9");
-#            3) checar se CONFIG_PATH ainda deve apontar pra pasta idrac678 ou se vale
-#               unificar num só servidores.json agora que está tudo num script único.
+#04/08/26 - Login travado do iDRAC9 corrigido (Tab + remoção de readonly no campo de senha)
