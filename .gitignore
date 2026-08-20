@@ -16,3 +16,12 @@ venv/
 
 # Variáveis de ambiente
 .env
+
+# Empacotamento
+*.egg-info/
+build/
+dist/
+
+# Pytest / ruff
+.pytest_cache/
+.ruff_cache/
